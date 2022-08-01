@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+
+<div class="container">
+    <div class="box-wrap">
+        <h1 class="center-text title-font sub-title">Booking Details</h1>
+    </div>
+</div>
+<br>
+<div class="col-md-3 col-sm-2 d-inline-block"></div>
+<div class="container col-md-6 col-sm-8 booking-box d-inline-block">
+    {% if booking.cancelled == True %}
+    <br>
+    <section class="text-center dead-btn">
+        <button class="cancel-box">Appointment Cancelled</button>
+    </section>
+    <br>
+    {% elif user.last_login.date > booking.appointment_date and booking.cancelled == False %}
+    <br>
+    <section class="text-center dead-btn">
+        <button class="attended-box">Appointment Attended</button>
+    </section>
+    {% elif user.last_login.date == booking.appointment_date %}
+    <br>
+    <section class="text-center dead-btn">
+        <button class="today-box">Appointment Today</button>
+    </section>
+    {% endif %}
+    <br>
+    <section>
+        <section class="row">
+            <div class="col-sm-6 spacer-1">
+                Booking made by:
+            </div>
+            <div class="col-sm-6 spacer-2">
+                {{ booking.user }}
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-sm-6 spacer-1">
+                Booking ID:
+            </div>
+            <div class="col-sm-6 spacer-2">
+                {{ booking.booking_id }}
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-sm-6 spacer-1">
+                Telephone No:
+            </div>
+            <div class="col-sm-6 spacer-2">
+                {{ booking.contact_no.as_national }}
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-sm-6 spacer-1">
+                Email Address:
+            </div>
+            <div class="col-sm-6 spacer-2 word text-break">
+                {{ booking.email }}
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-sm-6 spacer-1">
+                Treatment:
+            </div>
+            <div class="col-sm-6 spacer-2">
+                {{ booking.treatment }}
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-sm-6 spacer-1">
+                Appointment Date:
+            </div>
+            <div class="col-sm-6 spacer-2">
+                {{ booking.appointment_date }}
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-sm-6 spacer-1">
+                Appointment Time:
+            </div>
+            <div class="col-sm-6 spacer-2">
+                {{ booking.get_appointment_slot_display }}
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-sm-6 spacer-1">
+                Address:
+            </div>
+            <div class="col-sm-6 spacer-2">
+                {{ booking.address_line_one }},
+                <br>
+                {{ booking.address_line_two }},
+                <br>
+                {{ booking.address_line_three }},
+                <br>
+                {{ booking.city }},
+                <br>
+                {{ booking.post_code }}
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-sm-6 spacer-1">
+                Additional Information:
+            </div>
+            <div class="col-sm-6 spacer-2">
+                {{ booking.additional_info }}
+            </div>
+        </section>
+        <br>
+        <section class="row g-0">
+            <div class="text-center justify-center-content">
+                {% if not user.is_staff %}
+                {% if booking.cancelled == False %}
+                {% if user.last_login.date < booking.appointment_date %}
+                <a class="custom-site-btn btn-remove-blue edit-but" href="{% url 'edit-booking' booking.pk %}">Edit</a>
+                <a class="custom-site-btn btn-remove-blue del-but" href="{% url 'cancel-booking' booking.pk %}">Cancel</a>
+                {% elif user.last_login.date == booking.appointment_date %}
+                <a class="custom-site-btn btn-remove-blue nul-but"><s>Edit</s></a>
+                <a class="custom-site-btn btn-remove-blue nul-but"><s>Delete</s></a>
+                {% else %}
+                <a class="custom-site-btn btn-remove-blue nul-but"><s>Edit</s></a>
+                <a class="custom-site-btn btn-remove-blue del-but" href="{% url 'delete-booking' booking.pk %}">Delete</a>
+                {% endif %}
+                {% else %}
+                {% if user.last_login.date < booking.appointment_date %}
+                <a class="custom-site-btn btn-remove-blue nul-but"><s>Edit</s></a>
+                <a class="custom-site-btn btn-remove-blue nul-but"><s>Cancelled</s></a>
+                {% else %}
+                <a class="custom-site-btn btn-remove-blue nul-but"><s>Edit</s></a>
+                <a class="custom-site-btn btn-remove-blue del-but" href="{% url 'delete-booking' booking.pk %}">Delete</a>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+        </section>
+        <br>
+    </section>
+</div>
+<div class="col-md-3 col-sm-2 d-inline-block"></div>
+<br>
+<br>
+<div class="container">
+    <div class="row g-0">
+        <div class="col-sm-12 text-center">
+            {% if user.is_staff %}
+            <a class="custom-site-btn btn-remove-blue del-but" href="{% url 'admin-bookings' %}">Return</a>
+            {% else %}
+            <a class="btn-lg text-center light sub-custom-btn btn-remove-blue hvr-pulse" href="{% url 'bookings' %}">Back to Bookings</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+{% endif %}
+{% endblock content %}

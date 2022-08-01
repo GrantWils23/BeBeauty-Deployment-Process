@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+    <div class="box-wrap">
+        <h1 class="col center-text title-font sub-title">Price List</h1>
+    </div>
+</div>
+<br>
+<div class="container booking-box">
+    <br>
+    <div class="bodywork">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-md-10 g-0">
+                    <br>
+                    <h2><u><b>Treatments</b></u></h2>
+                    <table class="table table-prices">
+                        <thead>
+                            <tr>
+                                <th class="col-2">Type</th>
+                                <th class="col-3">Name</th>
+                                <th class="col-2">Price</th>
+                                <th class="col-2 d-none d-sm-table-cell">Time</th>
+                                <th class="col-3">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for treatment in treatments %}
+                            <tr>
+                                <td>{{ treatment.get_treatment_type_display }}</td>
+                                <td>{{ treatment.treatment_name }}</td>
+                                <td>£{{ treatment.treatment_price }}</td>
+                                <td class="d-none d-sm-table-cell">{{ treatment.treatment_time }}</td>
+                                <td>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#treatmentModal{{treatment.pk}}" class="custom-site-btn btn-remove-blue edit-but hvr info-btn">More info</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+            <br>
+        </div>
+    </div>
+    <br>
+</div>
+<br>
+<br>
+{% if user.is_staff %}
+<div class="container_fluid">
+    <div class="justify-content-center text-center ">
+        <a class="btn-lg light custom-btn hvr-pulse btn-remove-blue" href="{% url 'admin-booking' %}">Book Now</a>
+    </div>
+</div>
+{% else %}
+<div class="container_fluid">
+    <div class="justify-content-center text-center ">
+        <a class="btn-lg light custom-btn hvr-pulse btn-remove-blue" href="{% url 'booking' %}">Book Now</a>
+    </div>
+</div>
+{% endif %}
+<br>
+<br>
+<div class="container g-0">
+    <div class="text-center">
+        <a class="custom-site-btn btn-remove-blue edit-but" href="#">Return to top</a>
+    </div>
+</div>
+<br>
+<br>
+
+
+{% include 'treatment-price.html' %}
+
+{% endblock %}
